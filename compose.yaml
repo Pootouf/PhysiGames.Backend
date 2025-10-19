@@ -1,1 +1,9 @@
 services:
+  physigames-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: physigames-backend
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
