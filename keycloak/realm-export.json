@@ -863,27 +863,7 @@
           }
         ],
         "policies": [
-          {
-            "name": "Default Policy",
-            "description": "A policy that grants access only for users within this realm",
-            "type": "js",
-            "logic": "POSITIVE",
-            "decisionStrategy": "AFFIRMATIVE",
-            "config": {
-              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-            }
-          },
-          {
-            "name": "Default Permission",
-            "description": "A permission that applies to the default resource type",
-            "type": "resource",
-            "logic": "POSITIVE",
-            "decisionStrategy": "UNANIMOUS",
-            "config": {
-              "defaultResourceType": "urn:physigames-backend:resources:default",
-              "applyPolicies": "[\"Default Policy\"]"
-            }
-          }
+
         ],
         "scopes": [],
         "decisionStrategy": "UNANIMOUS"
@@ -965,27 +945,7 @@
           }
         ],
         "policies": [
-          {
-            "name": "Default Policy",
-            "description": "A policy that grants access only for users within this realm",
-            "type": "js",
-            "logic": "POSITIVE",
-            "decisionStrategy": "AFFIRMATIVE",
-            "config": {
-              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-            }
-          },
-          {
-            "name": "Default Permission",
-            "description": "A permission that applies to the default resource type",
-            "type": "resource",
-            "logic": "POSITIVE",
-            "decisionStrategy": "UNANIMOUS",
-            "config": {
-              "defaultResourceType": "urn:physigames-backend-dev:resources:default",
-              "applyPolicies": "[\"Default Policy\"]"
-            }
-          }
+
         ],
         "scopes": [],
         "decisionStrategy": "UNANIMOUS"
@@ -1067,27 +1027,7 @@
           }
         ],
         "policies": [
-          {
-            "name": "Default Policy",
-            "description": "A policy that grants access only for users within this realm",
-            "type": "js",
-            "logic": "POSITIVE",
-            "decisionStrategy": "AFFIRMATIVE",
-            "config": {
-              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-            }
-          },
-          {
-            "name": "Default Permission",
-            "description": "A permission that applies to the default resource type",
-            "type": "resource",
-            "logic": "POSITIVE",
-            "decisionStrategy": "UNANIMOUS",
-            "config": {
-              "defaultResourceType": "urn:physigames-backend-prod:resources:default",
-              "applyPolicies": "[\"Default Policy\"]"
-            }
-          }
+
         ],
         "scopes": [],
         "decisionStrategy": "UNANIMOUS"
