@@ -35,6 +35,10 @@ public class PhysicalRelease {
     @JoinColumn(name = "platform_id")
     private Platform platform;
 
+    @ManyToOne
+    @JoinColumn(name = "publisher_id")
+    private Publisher physicalPublisher;
+
     @OneToMany(mappedBy = "physicalRelease", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LocalizedPhysicalRelease> localizedReleases = new HashSet<>();
 
