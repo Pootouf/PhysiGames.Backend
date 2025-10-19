@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+traefik/logs
+
+.env.dev
+.env.prod

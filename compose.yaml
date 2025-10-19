@@ -1,4 +1,19 @@
 services:
+  traefik:
+    image: traefik:v3.5
+    container_name: physigames-traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Dashboard Traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/logs:/var/log/traefik
+    networks:
+      - physigames-network
+    restart: unless-stopped
+
   postgres:
     image: postgres:16.10-alpine
     container_name: physigames-postgres
@@ -10,6 +25,8 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - physigames-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
@@ -27,16 +44,33 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      # Configuration Traefik/Proxy
+      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME:-keycloak.localhost}
       KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
       KC_HTTP_ENABLED: true
-    ports:
-      - "${KEYCLOAK_PORT:-8180}:8080"
+      KC_PROXY: edge
+      KC_PROXY_ADDRESS_FORWARDING: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`${KEYCLOAK_HOSTNAME:-keycloak.localhost}`)"
+      - "traefik.http.routers.keycloak.entrypoints=web"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+      # Headers pour proxy
+      - "traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Forwarded-Proto=http"
+      - "traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Forwarded-Host=${KEYCLOAK_HOSTNAME:-keycloak.localhost}"
+      - "traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Forwarded-Port=80"
+      - "traefik.http.routers.keycloak.middlewares=keycloak-headers"
     command: start-dev --import-realm
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
       postgres:
         condition: service_healthy
+      traefik:
+        condition: service_started
+    networks:
+      - physigames-network
     restart: unless-stopped
 
   physigames-app:
@@ -44,8 +78,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: physigames-backend
-    ports:
-      - "${APP_PORT}:${APP_CONTAINER_PORT}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=${APP_CONTAINER_PORT}"
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       DB_USERNAME: ${POSTGRES_USER}
@@ -53,12 +90,22 @@ services:
       JPA_DDL_AUTO: ${JPA_DDL_AUTO}
       JPA_SHOW_SQL: ${JPA_SHOW_SQL}
       KEYCLOAK_URL: ${KEYCLOAK_URL:-http://keycloak:8080}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM:-physigames}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
     depends_on:
       postgres:
         condition: service_healthy
       keycloak:
         condition: service_started
+      traefik:
+        condition: service_started
+    networks:
+      - physigames-network
     restart: unless-stopped
+
+networks:
+  physigames-network:
+    driver: bridge
 
 volumes:
   postgres_data:
