@@ -21,3 +21,17 @@ log:
 
 accessLog:
   filePath: "/var/log/traefik/access.log"
+
+certificatesResolvers:
+  production:
+    acme:
+      email: prod@physigames.fr
+      storage: /ssl-certs/acme.json
+      dnsChallenge:
+        provider: ovh
+  dev:
+    acme:
+      email: dev@physigames.fr
+      storage: /ssl-certs/acme.json
+      dnsChallenge:
+        provider: ovh

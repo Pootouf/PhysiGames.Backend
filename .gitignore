@@ -34,5 +34,4 @@ build/
 
 traefik/logs
 
-.env.dev
-.env.prod
+.env.*

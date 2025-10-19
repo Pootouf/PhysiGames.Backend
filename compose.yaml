@@ -2,6 +2,9 @@ services:
   traefik:
     image: traefik:v3.5
     container_name: physigames-traefik
+    env_file:
+      - .env
+      - .env.local
     ports:
       - "80:80"
       - "443:443"
@@ -17,6 +20,9 @@ services:
   postgres:
     image: postgres:16.10-alpine
     container_name: physigames-postgres
+    env_file:
+      - .env
+      - .env.local
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -37,6 +43,9 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.4
     container_name: physigames-keycloak
+    env_file:
+      - .env
+      - .env.local
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
@@ -78,6 +87,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: physigames-backend
+    env_file:
+      - .env
+      - .env.local
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`api.localhost`)"
