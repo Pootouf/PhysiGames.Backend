@@ -54,6 +54,9 @@ public class Game {
     )
     private Set<Language> languages = new HashSet<>();
 
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PhysicalRelease> physicalReleases = new HashSet<>();
+
     public Game(String title) {
         this.title = title;
     }

@@ -24,6 +24,10 @@ public class PhysicalRelease {
     private LocalDate releaseDate;
 
     @ManyToOne
+    @JoinColumn(name = "game_id")
+    private Game game;
+
+    @ManyToOne
     @JoinColumn(name = "edition_id")
     private Edition edition;
 
