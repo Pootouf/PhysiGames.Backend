@@ -17,9 +17,9 @@ public class Genre {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String code;
 
-    public Genre(String name) {
-        this.name = name;
+    public Genre(String code) {
+        this.code = code;
     }
 }

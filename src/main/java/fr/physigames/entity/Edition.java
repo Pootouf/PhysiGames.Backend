@@ -19,11 +19,7 @@ public class Edition {
     @Column(nullable = false, unique = true)
     private String code;
 
-    @Column(nullable = false)
-    private String libelle;
-
-    public Edition(String code, String libelle) {
+    public Edition(String code) {
         this.code = code;
-        this.libelle = libelle;
     }
 }

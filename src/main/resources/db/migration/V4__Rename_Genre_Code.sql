@@ -1,0 +1,8 @@
+ALTER TABLE genres
+    ADD code VARCHAR(255);
+
+ALTER TABLE genres
+    ALTER COLUMN code SET NOT NULL;
+
+ALTER TABLE genres
+    DROP COLUMN name;
