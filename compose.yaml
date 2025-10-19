@@ -17,6 +17,28 @@ services:
       timeout: 5s
       retries: 5
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    container_name: physigames-keycloak
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+    ports:
+      - "${KEYCLOAK_PORT:-8180}:8080"
+    command: start-dev --import-realm
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
   physigames-app:
     build:
       context: .
@@ -30,9 +52,12 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       JPA_DDL_AUTO: ${JPA_DDL_AUTO}
       JPA_SHOW_SQL: ${JPA_SHOW_SQL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL:-http://keycloak:8080}
     depends_on:
       postgres:
         condition: service_healthy
+      keycloak:
+        condition: service_started
     restart: unless-stopped
 
 volumes:
