@@ -1,11 +1,18 @@
 package fr.physigames.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "games")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Game {
 
     @Id
@@ -39,50 +46,7 @@ public class Game {
     )
     private Set<Genre> genres = new HashSet<>();
 
-    public Game() {
-    }
-
     public Game(String title) {
         this.title = title;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Set<Publisher> getPublishers() {
-        return publishers;
-    }
-
-    public void setPublishers(Set<Publisher> publishers) {
-        this.publishers = publishers;
-    }
-
-    public Set<DevelopmentStudio> getDevelopmentStudios() {
-        return developmentStudios;
-    }
-
-    public void setDevelopmentStudios(Set<DevelopmentStudio> developmentStudios) {
-        this.developmentStudios = developmentStudios;
-    }
-
-    public Set<Genre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(Set<Genre> genres) {
-        this.genres = genres;
     }
 }
