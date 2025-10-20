@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,6 +23,8 @@ public class PhysicalReleaseRow {
 
     private String genreCode;
 
+    private String genreName;
+
     private String editionCode;
 
     private String platformCode;
@@ -32,4 +33,3 @@ public class PhysicalReleaseRow {
 
     private LocalDate releaseDate;
 }
-

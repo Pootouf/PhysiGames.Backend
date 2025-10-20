@@ -1,7 +1,8 @@
 package fr.physigames.service;
 
 import fr.physigames.entity.*;
-import fr.physigames.query.PhysicalReleaseQuery;
+import fr.physigames.query.SearchPhysicalReleaseQuery;
+import fr.physigames.repository.LocalizedGenreRepository;
 import fr.physigames.repository.PhysicalReleaseRepository;
 import fr.physigames.row.PhysicalReleaseRow;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PhysicalReleaseService {
 
     private final PhysicalReleaseRepository physicalReleaseRepository;
+    private final LocalizedGenreRepository localizedGenreRepository;
 
     /**
      * Recherche paginée de PhysicalRelease avec filtres optionnels.
@@ -26,7 +28,7 @@ public class PhysicalReleaseService {
      * @return Page de PhysicalReleaseRow
      */
     public Page<PhysicalReleaseRow> searchPhysicalReleases(
-            PhysicalReleaseQuery query,
+            SearchPhysicalReleaseQuery query,
             Pageable pageable) {
 
         Page<PhysicalRelease> physicalReleases = physicalReleaseRepository.searchPhysicalReleases(
@@ -42,17 +44,20 @@ public class PhysicalReleaseService {
                 pageable
         );
 
-        return physicalReleases.map(this::mapToRow);
+        final String languageCode = query.getLanguageCode();
+        return physicalReleases.map(pr -> mapToRow(pr, languageCode));
     }
 
     /**
      * Mappe une entité PhysicalRelease vers un PhysicalReleaseRow.
      * Pour les collections (publishers, developmentStudios, genres), prend uniquement le premier élément (mode aperçu).
+     * Le nom du genre est résolu via le repository des genres localisés selon le code de langue fourni.
      *
      * @param physicalRelease L'entité à mapper
+     * @param languageCode Code de la langue pour récupérer les libellés localisés (peut être null)
      * @return Le row mappé
      */
-    private PhysicalReleaseRow mapToRow(PhysicalRelease physicalRelease) {
+    private PhysicalReleaseRow mapToRow(PhysicalRelease physicalRelease, String languageCode) {
         PhysicalReleaseRow row = new PhysicalReleaseRow();
 
         row.setId(physicalRelease.getId());
@@ -83,11 +88,15 @@ public class PhysicalReleaseService {
 
             // Mapping des genres (prend uniquement le premier)
             if (game.getGenres() != null && !game.getGenres().isEmpty()) {
-                String firstGenre = game.getGenres().stream()
-                        .findFirst()
-                        .map(Genre::getCode)
-                        .orElse(null);
-                row.setGenreCode(firstGenre);
+                game.getGenres().stream().findFirst().ifPresent(firstGenre -> {
+                    row.setGenreCode(firstGenre.getCode());
+
+                    // Résolution du nom localisé du genre si une langue est fournie
+                    if (languageCode != null) {
+                        localizedGenreRepository.findByGenreIdAndLanguageCode(firstGenre.getId(), languageCode)
+                                .ifPresent(lg -> row.setGenreName(lg.getName()));
+                    }
+                });
             }
         }
 

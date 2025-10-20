@@ -1,6 +1,6 @@
 package fr.physigames.controller;
 
-import fr.physigames.query.PhysicalReleaseQuery;
+import fr.physigames.query.SearchPhysicalReleaseQuery;
 import fr.physigames.row.PhysicalReleaseRow;
 import fr.physigames.service.PhysicalReleaseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +42,7 @@ public class PhysicalReleaseController {
     @GetMapping
     @Operation(
             summary = "Rechercher des sorties physiques",
-            description = "Recherche paginée de sorties physiques avec filtres optionnels sur le jeu, l'éditeur, la plateforme, etc."
+            description = "Recherche paginée de sorties physiques avec filtres optionnels sur le jeu, l'éditeur, la plateforme, etc. Le paramètre 'language' est obligatoire et permet de récupérer les libellés localisés (ex: nom du genre)."
     )
     public ResponseEntity<Page<PhysicalReleaseRow>> searchPhysicalReleases(
             @Parameter(description = "Filtre sur le titre du jeu (recherche partielle, insensible à la casse)")
@@ -74,9 +74,12 @@ public class PhysicalReleaseController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate releaseDateTo,
 
+            @Parameter(description = "Code de la langue pour les libellés localisés (ex: 'fr-fr')", required = true)
+            @RequestParam(name = "language") String language,
+
             @PageableDefault(size = 20, sort = "releaseDate") Pageable pageable
     ) {
-        PhysicalReleaseQuery query = PhysicalReleaseQuery.builder()
+        SearchPhysicalReleaseQuery query = SearchPhysicalReleaseQuery.builder()
                 .gameTitle(gameTitle)
                 .publisherName(publisherName)
                 .physicalPublisherName(physicalPublisherName)
@@ -86,10 +89,10 @@ public class PhysicalReleaseController {
                 .platformCode(platformCode)
                 .releaseDateFrom(releaseDateFrom)
                 .releaseDateTo(releaseDateTo)
+                .languageCode(language)
                 .build();
 
         Page<PhysicalReleaseRow> results = physicalReleaseService.searchPhysicalReleases(query, pageable);
         return ResponseEntity.ok(results);
     }
 }
-

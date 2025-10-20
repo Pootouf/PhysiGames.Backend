@@ -6,13 +6,13 @@ import java.time.LocalDate;
 
 /**
  * Query object pour la recherche de PhysicalRelease.
- * Tous les champs sont optionnels (nullable).
+ * Tous les champs sont optionnels (nullable) sauf la langue qui sera exigée par le controller.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PhysicalReleaseQuery {
+public class SearchPhysicalReleaseQuery {
 
     /**
      * Filtre sur le titre du jeu (contient, insensible à la casse)
@@ -58,4 +58,10 @@ public class PhysicalReleaseQuery {
      * Date de sortie maximale (inclusive)
      */
     private LocalDate releaseDateTo;
+
+    /**
+     * Code de la langue utilisée pour récupérer les libellés localisés (ex: "fr-fr").
+     * Ce champ est requis au niveau de la route HTTP mais peut rester nullable dans l'objet query.
+     */
+    private String languageCode;
 }
