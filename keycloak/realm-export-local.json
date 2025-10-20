@@ -1,6 +1,8 @@
 {
   "id": "703536e6-4ee7-43a9-948d-960b3ff40a55",
-  "realm": "physigames",
+  "realm": "physigames-local",
+  "displayName": "Physigames Local",
+  "displayNameHtml": "",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -181,19 +183,19 @@
                 "query-realms",
                 "view-users",
                 "manage-users",
-                "query-users",
                 "query-clients",
+                "query-users",
                 "view-realm",
-                "view-authorization",
                 "impersonation",
+                "view-authorization",
                 "manage-realm",
                 "view-events",
                 "manage-authorization",
                 "query-groups",
-                "view-identity-providers",
                 "manage-identity-providers",
-                "view-clients",
+                "view-identity-providers",
                 "manage-clients",
+                "view-clients",
                 "create-client",
                 "manage-events"
               ]
@@ -328,22 +330,10 @@
           "attributes": {}
         }
       ],
-      "physigames-backend-dev": [
-        {
-          "id": "fbbfb992-00d4-4202-9ea8-4203c6ccd452",
-          "name": "uma_protection",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "0933e614-12c8-4f3c-8e5a-ccfa26444e52",
-          "attributes": {}
-        }
-      ],
       "security-admin-console": [],
       "admin-cli": [],
       "physigames-frontend": [],
       "account-console": [],
-      "physigames-frontend-dev": [],
-      "physigames-frontend-prod": [],
       "broker": [
         {
           "id": "3670b577-697f-4583-9220-a2dca49c9950",
@@ -352,16 +342,6 @@
           "composite": false,
           "clientRole": true,
           "containerId": "6ed3c9e2-756a-4525-bd7a-84e5a99abd94",
-          "attributes": {}
-        }
-      ],
-      "physigames-backend-prod": [
-        {
-          "id": "831a52c9-6974-45d5-8bab-c32b81b51591",
-          "name": "uma_protection",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "b026e248-ce4f-4e69-80ea-609f6a3c325c",
           "attributes": {}
         }
       ],
@@ -529,48 +509,6 @@
       },
       "notBefore": 0,
       "groups": []
-    },
-    {
-      "id": "8bc22e96-aa55-4d60-9d60-985fa9f8a5ef",
-      "username": "service-account-physigames-backend-dev",
-      "emailVerified": false,
-      "enabled": true,
-      "createdTimestamp": 1760878213672,
-      "totp": false,
-      "serviceAccountClientId": "physigames-backend-dev",
-      "disableableCredentialTypes": [],
-      "requiredActions": [],
-      "realmRoles": [
-        "default-roles-physigames"
-      ],
-      "clientRoles": {
-        "physigames-backend-dev": [
-          "uma_protection"
-        ]
-      },
-      "notBefore": 0,
-      "groups": []
-    },
-    {
-      "id": "fd722a04-c780-42da-abc9-24e31558339e",
-      "username": "service-account-physigames-backend-prod",
-      "emailVerified": false,
-      "enabled": true,
-      "createdTimestamp": 1760876352721,
-      "totp": false,
-      "serviceAccountClientId": "physigames-backend-prod",
-      "disableableCredentialTypes": [],
-      "requiredActions": [],
-      "realmRoles": [
-        "default-roles-physigames"
-      ],
-      "clientRoles": {
-        "physigames-backend-prod": [
-          "uma_protection"
-        ]
-      },
-      "notBefore": 0,
-      "groups": []
     }
   ],
   "scopeMappings": [
@@ -598,13 +536,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/physigames/account/",
+      "baseUrl": "/realms/physigames-local/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/physigames/account/*"
+        "/realms/physigames-local/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -645,13 +583,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/physigames/account/",
+      "baseUrl": "/realms/physigames-local/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/physigames/account/*"
+        "/realms/physigames-local/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -720,7 +658,8 @@
       "protocol": "openid-connect",
       "attributes": {
         "realm_client": "false",
-        "client.use.lightweight.access.token.enabled": "true"
+        "client.use.lightweight.access.token.enabled": "true",
+        "post.logout.redirect.uris": "+"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
@@ -762,7 +701,8 @@
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
-        "realm_client": "true"
+        "realm_client": "true",
+        "post.logout.redirect.uris": "+"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -860,176 +800,115 @@
             "uris": [
               "/*"
             ]
-          }
-        ],
-        "policies": [
-
-        ],
-        "scopes": [],
-        "decisionStrategy": "UNANIMOUS"
-      }
-    },
-    {
-      "id": "0933e614-12c8-4f3c-8e5a-ccfa26444e52",
-      "clientId": "physigames-backend-dev",
-      "name": "PhysiGames Backend Dev",
-      "description": "",
-      "rootUrl": "https://api.dev.physigames.fr",
-      "adminUrl": "https://api.dev.physigames.fr",
-      "baseUrl": "",
-      "surrogateAuthRequired": false,
-      "enabled": true,
-      "alwaysDisplayInConsole": false,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
-      "redirectUris": [
-        "https://api.dev.physigames.fr/*"
-      ],
-      "webOrigins": [
-        "https://api.dev.physigames.fr",
-        "https://dev.physigames.fr"
-      ],
-      "notBefore": 0,
-      "bearerOnly": false,
-      "consentRequired": false,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": true,
-      "publicClient": false,
-      "frontchannelLogout": true,
-      "protocol": "openid-connect",
-      "attributes": {
-        "realm_client": "false",
-        "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1760878213",
-        "backchannel.logout.session.required": "true",
-        "standard.token.exchange.enabled": "false",
-        "post.logout.redirect.uris": "https://api.dev.physigames.fr/*",
-        "oauth2.device.authorization.grant.enabled": "false",
-        "backchannel.logout.revoke.offline.tokens": "false",
-        "dpop.bound.access.tokens": "false"
-      },
-      "authenticationFlowBindingOverrides": {},
-      "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": [
-        "service_account",
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "organization",
-        "microprofile-jwt"
-      ],
-      "authorizationSettings": {
-        "allowRemoteResourceManagement": true,
-        "policyEnforcementMode": "ENFORCING",
-        "resources": [
+          },
           {
-            "name": "Default Resource",
-            "type": "urn:physigames-backend-dev:resources:default",
+            "name": "physical-release",
             "ownerManagedAccess": false,
+            "displayName": "Physical Release",
             "attributes": {},
             "uris": [
-              "/*"
-            ]
+              "/api/physical-releases/*",
+              "/api/physical-releases"
+            ],
+            "scopes": [
+              {
+                "name": "read"
+              },
+              {
+                "name": "add"
+              },
+              {
+                "name": "edit"
+              },
+              {
+                "name": "delete"
+              }
+            ],
+            "icon_uri": ""
           }
         ],
         "policies": [
-
-        ],
-        "scopes": [],
-        "decisionStrategy": "UNANIMOUS"
-      }
-    },
-    {
-      "id": "b026e248-ce4f-4e69-80ea-609f6a3c325c",
-      "clientId": "physigames-backend-prod",
-      "name": "PhysiGames Backend Production",
-      "description": "",
-      "rootUrl": "https://api.physigames.fr",
-      "adminUrl": "https://api.physigames.fr",
-      "baseUrl": "",
-      "surrogateAuthRequired": false,
-      "enabled": true,
-      "alwaysDisplayInConsole": false,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
-      "redirectUris": [
-        "https://api.physigames.fr/*"
-      ],
-      "webOrigins": [
-        "https://api.physigames.fr",
-        "https://physigames.fr"
-      ],
-      "notBefore": 0,
-      "bearerOnly": false,
-      "consentRequired": false,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": true,
-      "publicClient": false,
-      "frontchannelLogout": true,
-      "protocol": "openid-connect",
-      "attributes": {
-        "realm_client": "false",
-        "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1760876352",
-        "backchannel.logout.session.required": "true",
-        "standard.token.exchange.enabled": "false",
-        "post.logout.redirect.uris": "https://api.physigames.fr/*",
-        "oauth2.device.authorization.grant.enabled": "false",
-        "backchannel.logout.revoke.offline.tokens": "false",
-        "dpop.bound.access.tokens": "false"
-      },
-      "authenticationFlowBindingOverrides": {},
-      "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": [
-        "service_account",
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "organization",
-        "microprofile-jwt"
-      ],
-      "authorizationSettings": {
-        "allowRemoteResourceManagement": true,
-        "policyEnforcementMode": "ENFORCING",
-        "resources": [
           {
-            "name": "Default Resource",
-            "type": "urn:physigames-backend-prod:resources:default",
-            "ownerManagedAccess": false,
-            "attributes": {},
-            "uris": [
-              "/*"
-            ]
+            "name": "admin",
+            "description": "",
+            "type": "role",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "fetchRoles": "false",
+              "roles": "[{\"id\":\"admin\",\"required\":false}]"
+            }
+          },
+          {
+            "name": "user",
+            "description": "",
+            "type": "role",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "fetchRoles": "false",
+              "roles": "[{\"id\":\"user\",\"required\":false}]"
+            }
+          },
+          {
+            "name": "physical-release:add",
+            "description": "",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+              "resources": "[\"physical-release\"]",
+              "scopes": "[\"add\"]",
+              "applyPolicies": "[\"admin\"]"
+            }
+          },
+          {
+            "name": "physical-release:edit",
+            "description": "",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+              "resources": "[\"physical-release\"]",
+              "scopes": "[\"edit\"]",
+              "applyPolicies": "[\"admin\"]"
+            }
+          },
+          {
+            "name": "physical-release:delete",
+            "description": "",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+              "resources": "[\"physical-release\"]",
+              "scopes": "[\"delete\"]",
+              "applyPolicies": "[\"admin\"]"
+            }
           }
         ],
-        "policies": [
-
+        "scopes": [
+          {
+            "name": "edit",
+            "iconUri": "",
+            "displayName": "Edit"
+          },
+          {
+            "name": "add",
+            "iconUri": "",
+            "displayName": "Add"
+          },
+          {
+            "name": "read",
+            "iconUri": "",
+            "displayName": "Read"
+          },
+          {
+            "name": "delete",
+            "iconUri": "",
+            "displayName": "Delete"
+          }
         ],
-        "scopes": [],
         "decisionStrategy": "UNANIMOUS"
       }
     },
@@ -1095,120 +974,6 @@
       ]
     },
     {
-      "id": "4cefc607-7c6b-4382-ba55-bcdaba7b8e71",
-      "clientId": "physigames-frontend-dev",
-      "name": "PhysiGames Frontend Dev",
-      "description": "",
-      "rootUrl": "https://dev.physigames.fr",
-      "adminUrl": "https://dev.physigames.fr",
-      "baseUrl": "",
-      "surrogateAuthRequired": false,
-      "enabled": true,
-      "alwaysDisplayInConsole": false,
-      "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "https://dev.physigames.fr/*"
-      ],
-      "webOrigins": [
-        "https://dev.physigames.fr"
-      ],
-      "notBefore": 0,
-      "bearerOnly": false,
-      "consentRequired": false,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
-      "publicClient": true,
-      "frontchannelLogout": true,
-      "protocol": "openid-connect",
-      "attributes": {
-        "realm_client": "false",
-        "oidc.ciba.grant.enabled": "false",
-        "backchannel.logout.session.required": "true",
-        "standard.token.exchange.enabled": "false",
-        "post.logout.redirect.uris": "https://dev.physigames.fr/*",
-        "oauth2.device.authorization.grant.enabled": "false",
-        "backchannel.logout.revoke.offline.tokens": "false",
-        "dpop.bound.access.tokens": "false"
-      },
-      "authenticationFlowBindingOverrides": {},
-      "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "organization",
-        "microprofile-jwt"
-      ]
-    },
-    {
-      "id": "859e322f-48cc-402c-9024-0189844ba3dd",
-      "clientId": "physigames-frontend-prod",
-      "name": "PhysiGames Frontend Production",
-      "description": "",
-      "rootUrl": "https://physigames.fr",
-      "adminUrl": "https://physigames.fr",
-      "baseUrl": "",
-      "surrogateAuthRequired": false,
-      "enabled": true,
-      "alwaysDisplayInConsole": false,
-      "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "https://physigames.fr/*"
-      ],
-      "webOrigins": [
-        "https://physigames.fr"
-      ],
-      "notBefore": 0,
-      "bearerOnly": false,
-      "consentRequired": false,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
-      "publicClient": true,
-      "frontchannelLogout": true,
-      "protocol": "openid-connect",
-      "attributes": {
-        "realm_client": "false",
-        "oidc.ciba.grant.enabled": "false",
-        "backchannel.logout.session.required": "true",
-        "standard.token.exchange.enabled": "false",
-        "post.logout.redirect.uris": "https://physigames.fr/*",
-        "oauth2.device.authorization.grant.enabled": "false",
-        "backchannel.logout.revoke.offline.tokens": "false",
-        "dpop.bound.access.tokens": "false"
-      },
-      "authenticationFlowBindingOverrides": {},
-      "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "organization",
-        "microprofile-jwt"
-      ]
-    },
-    {
       "id": "f89c8eae-6add-405e-aa64-32a807e397f0",
       "clientId": "realm-management",
       "name": "${client_realm-management}",
@@ -1229,7 +994,8 @@
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
-        "realm_client": "true"
+        "realm_client": "true",
+        "post.logout.redirect.uris": "+"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -1255,13 +1021,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/physigames/console/",
+      "baseUrl": "/admin/physigames-local/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/physigames/console/*"
+        "/admin/physigames-local/console/*"
       ],
       "webOrigins": [
         "+"
@@ -1747,8 +1513,9 @@
           "consentRequired": false,
           "config": {
             "user.session.note": "AUTH_TIME",
-            "id.token.claim": "true",
             "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "auth_time",
             "jsonType.label": "long"
@@ -1799,7 +1566,8 @@
           "config": {
             "id.token.claim": "true",
             "introspection.token.claim": "true",
-            "access.token.claim": "true"
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
           }
         }
       ]
@@ -1863,6 +1631,7 @@
           "config": {
             "introspection.token.claim": "true",
             "multivalued": "true",
+            "userinfo.token.claim": "true",
             "user.attribute": "foo",
             "id.token.claim": "true",
             "access.token.claim": "true",
@@ -1890,8 +1659,9 @@
           "consentRequired": false,
           "config": {
             "user.session.note": "clientAddress",
-            "id.token.claim": "true",
             "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "clientAddress",
             "jsonType.label": "String"
@@ -1905,8 +1675,9 @@
           "consentRequired": false,
           "config": {
             "user.session.note": "clientHost",
-            "id.token.claim": "true",
             "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "clientHost",
             "jsonType.label": "String"
@@ -1920,8 +1691,9 @@
           "consentRequired": false,
           "config": {
             "user.session.note": "client_id",
-            "id.token.claim": "true",
             "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "client_id",
             "jsonType.label": "String"
@@ -1957,12 +1729,13 @@
           "protocolMapper": "oidc-organization-membership-mapper",
           "consentRequired": false,
           "config": {
-            "id.token.claim": "true",
             "introspection.token.claim": "true",
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "organization",
-            "jsonType.label": "String",
-            "multivalued": "true"
+            "jsonType.label": "String"
           }
         }
       ]
@@ -2081,14 +1854,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "saml-role-list-mapper",
-            "oidc-address-mapper",
-            "saml-user-property-mapper",
             "oidc-sha256-pairwise-sub-mapper",
-            "saml-user-attribute-mapper",
+            "saml-user-property-mapper",
             "oidc-usermodel-attribute-mapper",
+            "oidc-address-mapper",
+            "saml-role-list-mapper",
+            "oidc-full-name-mapper",
             "oidc-usermodel-property-mapper",
-            "oidc-full-name-mapper"
+            "saml-user-attribute-mapper"
           ]
         }
       },
@@ -2112,14 +1885,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "saml-role-list-mapper",
-            "oidc-usermodel-attribute-mapper",
             "oidc-address-mapper",
-            "saml-user-property-mapper",
             "oidc-full-name-mapper",
+            "saml-role-list-mapper",
             "oidc-sha256-pairwise-sub-mapper",
             "saml-user-attribute-mapper",
-            "oidc-usermodel-property-mapper"
+            "oidc-usermodel-property-mapper",
+            "oidc-usermodel-attribute-mapper",
+            "saml-user-property-mapper"
           ]
         }
       },
@@ -3021,13 +2794,20 @@
   "firstBrokerLoginFlow": "first broker login",
   "attributes": {
     "cibaBackchannelTokenDeliveryMode": "poll",
-    "cibaExpiresIn": "120",
     "cibaAuthRequestedUserHint": "login_hint",
-    "oauth2DeviceCodeLifespan": "600",
+    "clientOfflineSessionMaxLifespan": "0",
     "oauth2DevicePollingInterval": "5",
-    "parRequestUriLifespan": "60",
+    "clientSessionIdleTimeout": "0",
+    "clientOfflineSessionIdleTimeout": "0",
     "cibaInterval": "5",
-    "realmReusableOtpCode": "false"
+    "realmReusableOtpCode": "false",
+    "cibaExpiresIn": "120",
+    "oauth2DeviceCodeLifespan": "600",
+    "saml.signature.algorithm": "",
+    "parRequestUriLifespan": "60",
+    "clientSessionMaxLifespan": "0",
+    "frontendUrl": "",
+    "acr.loa.map": "{}"
   },
   "keycloakVersion": "26.4.1",
   "userManagedAccessAllowed": false,
