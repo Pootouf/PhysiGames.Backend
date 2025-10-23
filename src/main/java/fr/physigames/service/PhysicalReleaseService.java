@@ -1,8 +1,8 @@
 package fr.physigames.service;
 
 import fr.physigames.entity.*;
+import fr.physigames.mapper.PhysicalReleaseMapper;
 import fr.physigames.query.physicalrelease.SearchPhysicalReleaseQuery;
-import fr.physigames.repository.LocalizedGenreRepository;
 import fr.physigames.repository.PhysicalReleaseRepository;
 import fr.physigames.row.PhysicalReleaseRow;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PhysicalReleaseService {
 
     private final PhysicalReleaseRepository physicalReleaseRepository;
-    private final LocalizedGenreRepository localizedGenreRepository;
+    private final PhysicalReleaseMapper physicalReleaseMapper;
+    private final LocalizedGenreService localizedGenreService;
 
     /**
      * Recherche paginée de PhysicalRelease avec filtres optionnels.
@@ -46,81 +47,13 @@ public class PhysicalReleaseService {
         );
 
         final String languageCode = query.getLanguageCode();
-        return physicalReleases.map(pr -> mapToRow(pr, languageCode));
-    }
-
-    /**
-     * Mappe une entité PhysicalRelease vers un PhysicalReleaseRow.
-     * Pour les collections (publishers, developmentStudios, genres), prend uniquement le premier élément (mode aperçu).
-     * Le nom du genre est résolu via le repository des genres localisés selon le code de langue fourni.
-     *
-     * @param physicalRelease L'entité à mapper
-     * @param languageCode Code de la langue pour récupérer les libellés localisés (peut être null)
-     * @return Le row mappé
-     */
-    private PhysicalReleaseRow mapToRow(PhysicalRelease physicalRelease, String languageCode) {
-        PhysicalReleaseRow row = new PhysicalReleaseRow();
-
-        row.setId(physicalRelease.getId());
-        row.setReleaseDate(physicalRelease.getReleaseDate());
-
-        // Set the physical release name if present
-        row.setPhysicalReleaseName(physicalRelease.getName());
-
-        // Mapping du jeu
-        if (physicalRelease.getGame() != null) {
-            Game game = physicalRelease.getGame();
-            row.setGameTitle(game.getTitle());
-
-            // Mapping des publishers (prend uniquement le premier)
-            if (game.getPublishers() != null && !game.getPublishers().isEmpty()) {
-                String firstPublisher = game.getPublishers().stream()
-                        .findFirst()
-                        .map(Publisher::getName)
-                        .orElse(null);
-                row.setPublisherName(firstPublisher);
+        return physicalReleases.map(pr -> {
+            String localizedGenreName = null;
+            if (languageCode != null && pr.getGame() != null && pr.getGame().getGenres() != null && !pr.getGame().getGenres().isEmpty()) {
+                Long firstGenreId = pr.getGame().getGenres().stream().findFirst().map(Genre::getId).orElse(null);
+                localizedGenreName = localizedGenreService.findNameByGenreIdAndLanguage(firstGenreId, languageCode).orElse(null);
             }
-
-            // Mapping des studios de développement (prend uniquement le premier)
-            if (game.getDevelopmentStudios() != null && !game.getDevelopmentStudios().isEmpty()) {
-                String firstStudio = game.getDevelopmentStudios().stream()
-                        .findFirst()
-                        .map(DevelopmentStudio::getName)
-                        .orElse(null);
-                row.setDevelopmentStudioName(firstStudio);
-            }
-
-            // Mapping des genres (prend uniquement le premier)
-            if (game.getGenres() != null && !game.getGenres().isEmpty()) {
-                game.getGenres().stream().findFirst().ifPresent(firstGenre -> {
-                    row.setGenreCode(firstGenre.getCode());
-
-                    // Résolution du nom localisé du genre si une langue est fournie
-                    if (languageCode != null) {
-                        localizedGenreRepository.findByGenreIdAndLanguageCode(firstGenre.getId(), languageCode)
-                                .ifPresent(lg -> row.setGenreName(lg.getName()));
-                    }
-                });
-            }
-        }
-
-        // Mapping du publisher physique
-        if (physicalRelease.getPhysicalPublisher() != null) {
-            row.setPhysicalPublisherName(physicalRelease.getPhysicalPublisher().getName());
-        }
-
-        // Mapping de l'édition
-        if (physicalRelease.getEdition() != null) {
-            row.setEditionCode(physicalRelease.getEdition().getCode());
-        }
-
-        // Mapping de la plateforme
-        if (physicalRelease.getPlatform() != null) {
-            Platform platform = physicalRelease.getPlatform();
-            row.setPlatformCode(platform.getCode());
-            row.setPlatformLibelle(platform.getLibelle());
-        }
-
-        return row;
+            return physicalReleaseMapper.toRow(pr, localizedGenreName);
+        });
     }
 }
