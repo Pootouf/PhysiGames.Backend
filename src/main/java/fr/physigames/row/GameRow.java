@@ -12,9 +12,9 @@ import java.util.Set;
 public class GameRow {
     private Long id;
     private String title;
-    private Set<String> publisherNames;
-    private Set<String> developmentStudioNames;
-    private Set<String> genreCodes;
+    private Set<PublisherRow> publishers;
+    private Set<DevelopmentStudioRow> developmentStudios;
+    private Set<GenreRow> genres;
     private Set<String> languageCodes;
     private Set<PhysicalReleaseRow> physicalReleases;
 }

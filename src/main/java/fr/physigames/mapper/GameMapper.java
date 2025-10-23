@@ -3,7 +3,10 @@ package fr.physigames.mapper;
 import fr.physigames.entity.Game;
 import fr.physigames.row.GameRow;
 import fr.physigames.row.PhysicalReleaseRow;
-import fr.physigames.service.LocalizedGenreService;
+import fr.physigames.row.PublisherRow;
+import fr.physigames.row.DevelopmentStudioRow;
+import fr.physigames.row.GenreRow;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,27 +18,38 @@ import java.util.stream.Collectors;
 public class GameMapper {
 
     private final PhysicalReleaseMapper physicalReleaseMapper;
-    private final LocalizedGenreService localizedGenreService;
 
-    public GameRow toRow(Game g) {
-        return toRow(g, null);
-    }
-
-    public GameRow toRow(Game g, String languageCode) {
+    /**
+     * Main mapping method. If localizedGenreNames is null, genre names won't be filled.
+     */
+    public GameRow toRow(Game g, Map<Long, String> localizedGenreNames) {
         GameRow row = new GameRow();
         row.setId(g.getId());
         row.setTitle(g.getTitle());
 
         if (g.getPublishers() != null) {
-            row.setPublisherNames(g.getPublishers().stream().map(fr.physigames.entity.Publisher::getName).collect(Collectors.toSet()));
+            Set<PublisherRow> publisherRows = g.getPublishers().stream()
+                    .map(p -> new PublisherRow(p.getId(), p.getName()))
+                    .collect(Collectors.toSet());
+            row.setPublishers(publisherRows);
         }
 
         if (g.getDevelopmentStudios() != null) {
-            row.setDevelopmentStudioNames(g.getDevelopmentStudios().stream().map(fr.physigames.entity.DevelopmentStudio::getName).collect(Collectors.toSet()));
+            Set<DevelopmentStudioRow> devRows = g.getDevelopmentStudios().stream()
+                    .map(d -> new DevelopmentStudioRow(d.getId(), d.getName()))
+                    .collect(Collectors.toSet());
+            row.setDevelopmentStudios(devRows);
         }
 
         if (g.getGenres() != null) {
-            row.setGenreCodes(g.getGenres().stream().map(fr.physigames.entity.Genre::getCode).collect(Collectors.toSet()));
+            Set<GenreRow> genreRows = g.getGenres().stream().map(ge -> {
+                String localizedName = null;
+                if (localizedGenreNames != null) {
+                    localizedName = localizedGenreNames.get(ge.getId());
+                }
+                return new GenreRow(ge.getId(), ge.getCode(), localizedName);
+            }).collect(Collectors.toSet());
+            row.setGenres(genreRows);
         }
 
         if (g.getLanguages() != null) {
@@ -46,9 +60,11 @@ public class GameMapper {
         if (g.getPhysicalReleases() != null) {
             Set<PhysicalReleaseRow> prRows = g.getPhysicalReleases().stream().map(pr -> {
                 String localizedGenreName = null;
-                if (languageCode != null && g.getGenres() != null && !g.getGenres().isEmpty()) {
+                if (localizedGenreNames != null && g.getGenres() != null && !g.getGenres().isEmpty()) {
                     Long firstGenreId = g.getGenres().stream().findFirst().map(fr.physigames.entity.Genre::getId).orElse(null);
-                    localizedGenreName = localizedGenreService.findNameByGenreIdAndLanguage(firstGenreId, languageCode).orElse(null);
+                    if (firstGenreId != null) {
+                        localizedGenreName = localizedGenreNames.get(firstGenreId);
+                    }
                 }
                 return physicalReleaseMapper.toRow(pr, localizedGenreName);
             }).collect(Collectors.toSet());

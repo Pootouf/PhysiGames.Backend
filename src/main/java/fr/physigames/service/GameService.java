@@ -6,9 +6,7 @@ import fr.physigames.entity.Genre;
 import fr.physigames.entity.Language;
 import fr.physigames.entity.Publisher;
 import fr.physigames.mapper.GameMapper;
-import fr.physigames.mapper.PhysicalReleaseMapper;
 import fr.physigames.row.GameRow;
-import fr.physigames.row.PhysicalReleaseRow;
 import fr.physigames.repository.DevelopmentStudioRepository;
 import fr.physigames.repository.GameRepository;
 import fr.physigames.repository.GenreRepository;
@@ -20,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -37,7 +37,6 @@ public class GameService {
     private final GenreRepository genreRepository;
     private final LanguageRepository languageRepository;
     private final GameMapper gameMapper;
-    private final PhysicalReleaseMapper physicalReleaseMapper;
     private final LocalizedGenreService localizedGenreService;
 
     public Page<GameRow> search(String title, Pageable pageable, String languageCode) {
@@ -90,22 +89,21 @@ public class GameService {
      * Mappe un Game en GameRow en appliquant la localisation des genres pour les physicalReleases si demandé.
      */
     private GameRow mapWithLanguage(Game g, String languageCode) {
-        GameRow row = gameMapper.toRow(g); // base mapping (inclut physicalReleases avec no localization)
-
-        // If language provided, recompute physical releases with localized genre names
-        if (languageCode != null && g.getPhysicalReleases() != null) {
-            Set<PhysicalReleaseRow> prRows = g.getPhysicalReleases().stream().map(pr -> {
-                String localizedGenreName = null;
-                if (g.getGenres() != null && !g.getGenres().isEmpty()) {
-                    Long firstGenreId = g.getGenres().stream().findFirst().map(fr.physigames.entity.Genre::getId).orElse(null);
-                    localizedGenreName = localizedGenreService.findNameByGenreIdAndLanguage(firstGenreId, languageCode).orElse(null);
+        Map<Long, String> localizedGenreNames = null;
+        if (languageCode != null && g.getGenres() != null && !g.getGenres().isEmpty()) {
+            localizedGenreNames = new HashMap<>();
+            for (Genre genre : g.getGenres()) {
+                final Long gid = genre.getId();
+                if (gid != null) {
+                    java.util.Optional<String> nameOpt = localizedGenreService.findNameByGenreIdAndLanguage(gid, languageCode);
+                    if (nameOpt.isPresent()) {
+                        localizedGenreNames.put(gid, nameOpt.get());
+                    }
                 }
-                return physicalReleaseMapper.toRow(pr, localizedGenreName);
-            }).collect(Collectors.toSet());
-            row.setPhysicalReleases(prRows);
+            }
         }
 
-        return row;
+        return gameMapper.toRow(g, localizedGenreNames);
     }
 
     private Set<Publisher> resolvePublishers(Set<Publisher> publishers) {
