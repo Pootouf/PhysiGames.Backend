@@ -1,7 +1,9 @@
 package fr.physigames.service;
 
 import fr.physigames.entity.DevelopmentStudio;
+import fr.physigames.mapper.DevelopmentStudioMapper;
 import fr.physigames.repository.DevelopmentStudioRepository;
+import fr.physigames.row.DevelopmentStudioRow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +18,14 @@ import java.util.Optional;
 public class DevelopmentStudioService {
 
     private final DevelopmentStudioRepository developmentStudioRepository;
+    private final DevelopmentStudioMapper developmentStudioMapper;
 
-    public Page<DevelopmentStudio> search(String name, Pageable pageable) {
-        return developmentStudioRepository.searchByName(name, pageable);
+    public Page<DevelopmentStudioRow> search(String name, Pageable pageable) {
+        return developmentStudioRepository.searchByName(name, pageable).map(developmentStudioMapper::toRow);
     }
 
-    public Optional<DevelopmentStudio> findById(Long id) {
-        return developmentStudioRepository.findById(id);
+    public Optional<DevelopmentStudioRow> findById(Long id) {
+        return developmentStudioRepository.findById(id).map(developmentStudioMapper::toRow);
     }
 
     @Transactional
@@ -47,4 +50,3 @@ public class DevelopmentStudioService {
         }).orElse(false);
     }
 }
-

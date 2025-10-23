@@ -1,7 +1,9 @@
 package fr.physigames.service;
 
 import fr.physigames.entity.Publisher;
+import fr.physigames.mapper.PublisherMapper;
 import fr.physigames.repository.PublisherRepository;
+import fr.physigames.row.PublisherRow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +18,14 @@ import java.util.Optional;
 public class PublisherService {
 
     private final PublisherRepository publisherRepository;
+    private final PublisherMapper publisherMapper;
 
-    public Page<Publisher> search(String name, Pageable pageable) {
-        return publisherRepository.searchByName(name, pageable);
+    public Page<PublisherRow> search(String name, Pageable pageable) {
+        return publisherRepository.searchByName(name, pageable).map(publisherMapper::toRow);
     }
 
-    public Optional<Publisher> findById(Long id) {
-        return publisherRepository.findById(id);
+    public Optional<PublisherRow> findById(Long id) {
+        return publisherRepository.findById(id).map(publisherMapper::toRow);
     }
 
     @Transactional
@@ -47,4 +50,3 @@ public class PublisherService {
         }).orElse(false);
     }
 }
-

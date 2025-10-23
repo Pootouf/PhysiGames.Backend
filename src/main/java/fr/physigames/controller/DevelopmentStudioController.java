@@ -4,6 +4,7 @@ import fr.physigames.entity.DevelopmentStudio;
 import fr.physigames.query.developmentstudio.CreateDevelopmentStudioQuery;
 import fr.physigames.query.developmentstudio.UpdateDevelopmentStudioQuery;
 import fr.physigames.query.developmentstudio.SearchDevelopmentStudioQuery;
+import fr.physigames.row.DevelopmentStudioRow;
 import fr.physigames.service.DevelopmentStudioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,17 +25,17 @@ public class DevelopmentStudioController {
 
     @GetMapping
     @Operation(summary = "Rechercher des studios de développement", description = "Recherche paginée par nom (partiel, insensible à la casse)")
-    public ResponseEntity<Page<DevelopmentStudio>> search(
+    public ResponseEntity<Page<DevelopmentStudioRow>> search(
             @ModelAttribute SearchDevelopmentStudioQuery query,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        Page<DevelopmentStudio> results = developmentStudioService.search(query.getName(), pageable);
+        Page<DevelopmentStudioRow> results = developmentStudioService.search(query.getName(), pageable);
         return ResponseEntity.ok(results);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Récupérer un studio par son id")
-    public ResponseEntity<DevelopmentStudio> getById(@PathVariable Long id) {
+    public ResponseEntity<DevelopmentStudioRow> getById(@PathVariable Long id) {
         return developmentStudioService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

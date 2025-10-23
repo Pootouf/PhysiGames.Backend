@@ -1,6 +1,7 @@
 package fr.physigames.controller;
 
 import fr.physigames.entity.Publisher;
+import fr.physigames.row.PublisherRow;
 import fr.physigames.query.publisher.CreatePublisherQuery;
 import fr.physigames.query.publisher.UpdatePublisherQuery;
 import fr.physigames.query.publisher.SearchPublisherQuery;
@@ -24,17 +25,17 @@ public class PublisherController {
 
     @GetMapping
     @Operation(summary = "Rechercher des éditeurs", description = "Recherche paginée par nom (partiel, insensible à la casse)")
-    public ResponseEntity<Page<Publisher>> search(
+    public ResponseEntity<Page<PublisherRow>> search(
             @ModelAttribute SearchPublisherQuery query,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        Page<Publisher> results = publisherService.search(query.getName(), pageable);
+        Page<PublisherRow> results = publisherService.search(query.getName(), pageable);
         return ResponseEntity.ok(results);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Récupérer un éditeur par son id")
-    public ResponseEntity<Publisher> getById(@PathVariable Long id) {
+    public ResponseEntity<PublisherRow> getById(@PathVariable Long id) {
         return publisherService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -64,4 +65,3 @@ public class PublisherController {
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
-
