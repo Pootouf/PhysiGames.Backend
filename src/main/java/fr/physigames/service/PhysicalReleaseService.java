@@ -1,7 +1,7 @@
 package fr.physigames.service;
 
 import fr.physigames.entity.*;
-import fr.physigames.query.SearchPhysicalReleaseQuery;
+import fr.physigames.query.physicalrelease.SearchPhysicalReleaseQuery;
 import fr.physigames.repository.LocalizedGenreRepository;
 import fr.physigames.repository.PhysicalReleaseRepository;
 import fr.physigames.row.PhysicalReleaseRow;

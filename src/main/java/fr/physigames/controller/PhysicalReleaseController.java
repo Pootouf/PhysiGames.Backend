@@ -1,6 +1,6 @@
 package fr.physigames.controller;
 
-import fr.physigames.query.SearchPhysicalReleaseQuery;
+import fr.physigames.query.physicalrelease.SearchPhysicalReleaseQuery;
 import fr.physigames.row.PhysicalReleaseRow;
 import fr.physigames.service.PhysicalReleaseService;
 import io.swagger.v3.oas.annotations.Operation;

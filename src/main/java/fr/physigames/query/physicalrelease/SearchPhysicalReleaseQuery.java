@@ -1,4 +1,4 @@
-package fr.physigames.query;
+package fr.physigames.query.physicalrelease;
 
 import lombok.*;
 
