@@ -1,6 +1,5 @@
 package fr.physigames.query.developmentstudio;
 
-import fr.physigames.entity.DevelopmentStudio;
 import lombok.Builder;
 import lombok.Data;
 
