@@ -42,6 +42,9 @@ public class PhysicalRelease {
     @OneToMany(mappedBy = "physicalRelease", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LocalizedPhysicalRelease> localizedReleases = new HashSet<>();
 
+    @Column(name = "name")
+    private String name;
+
     public PhysicalRelease(LocalDate releaseDate, Edition edition) {
         this.releaseDate = releaseDate;
         this.edition = edition;

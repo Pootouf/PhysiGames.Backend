@@ -54,6 +54,9 @@ public class PhysicalReleaseController {
             @Parameter(description = "Filtre sur le nom de l'éditeur physique (recherche partielle, insensible à la casse)")
             @RequestParam(required = false) String physicalPublisherName,
 
+            @Parameter(description = "Filtre sur le nom de la release physique (recherche partielle, insensible à la casse)")
+            @RequestParam(required = false) String physicalReleaseName,
+
             @Parameter(description = "Filtre sur le nom du studio de développement (recherche partielle, insensible à la casse)")
             @RequestParam(required = false) String developmentStudioName,
 
@@ -83,6 +86,7 @@ public class PhysicalReleaseController {
                 .gameTitle(gameTitle)
                 .publisherName(publisherName)
                 .physicalPublisherName(physicalPublisherName)
+                .physicalReleaseName(physicalReleaseName)
                 .developmentStudioName(developmentStudioName)
                 .genreCode(genreCode)
                 .editionCode(editionCode)

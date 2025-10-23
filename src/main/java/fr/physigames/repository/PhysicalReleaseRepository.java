@@ -21,6 +21,7 @@ public interface PhysicalReleaseRepository extends JpaRepository<PhysicalRelease
      * @param gameTitle Filtre sur le titre du jeu (contient, insensible à la casse)
      * @param publisherName Filtre sur les publishers du jeu (contient, insensible à la casse)
      * @param physicalPublisherName Filtre sur le publisher physique (contient, insensible à la casse)
+     * @param physicalReleaseName Filter sur le nom physique du jeu
      * @param developmentStudioName Filtre sur les studios de développement du jeu (contient, insensible à la casse)
      * @param genreCode Filtre sur les genres du jeu (contient, insensible à la casse)
      * @param editionCode Filtre sur le code d'édition (contient, insensible à la casse)
@@ -45,6 +46,7 @@ public interface PhysicalReleaseRepository extends JpaRepository<PhysicalRelease
             "    AND LOWER(pub2.name) LIKE LOWER(CONCAT('%', :publisherName, '%')) AND :publisherName IS NOT NULL" +
             ") " +
             "AND (LOWER(pp.name) LIKE LOWER(CONCAT('%', :physicalPublisherName, '%')) OR :physicalPublisherName IS NULL) " +
+            "AND (LOWER(pr.name) LIKE LOWER(CONCAT('%', :physicalReleaseName, '%')) OR :physicalReleaseName IS NULL) " +
             "AND EXISTS (" +
             "    SELECT 1 FROM DevelopmentStudio ds2 " +
             "    WHERE ds2 MEMBER OF g.developmentStudios " +
@@ -63,6 +65,7 @@ public interface PhysicalReleaseRepository extends JpaRepository<PhysicalRelease
             @Param("gameTitle") String gameTitle,
             @Param("publisherName") String publisherName,
             @Param("physicalPublisherName") String physicalPublisherName,
+            @Param("physicalReleaseName") String physicalReleaseName,
             @Param("developmentStudioName") String developmentStudioName,
             @Param("genreCode") String genreCode,
             @Param("editionCode") String editionCode,

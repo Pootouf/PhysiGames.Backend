@@ -19,6 +19,8 @@ public class PhysicalReleaseRow {
 
     private String physicalPublisherName;
 
+    private String physicalReleaseName;
+
     private String developmentStudioName;
 
     private String genreCode;

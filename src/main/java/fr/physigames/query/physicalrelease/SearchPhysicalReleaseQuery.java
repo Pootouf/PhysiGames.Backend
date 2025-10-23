@@ -30,6 +30,11 @@ public class SearchPhysicalReleaseQuery {
     private String physicalPublisherName;
 
     /**
+     * Filtre sur le nom de la release physique (contient, insensible à la casse)
+     */
+    private String physicalReleaseName;
+
+    /**
      * Filtre sur les studios de développement du jeu (contient, insensible à la casse)
      */
     private String developmentStudioName;

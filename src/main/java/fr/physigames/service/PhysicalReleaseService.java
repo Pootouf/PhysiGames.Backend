@@ -35,6 +35,7 @@ public class PhysicalReleaseService {
                 query.getGameTitle(),
                 query.getPublisherName(),
                 query.getPhysicalPublisherName(),
+                query.getPhysicalReleaseName(),
                 query.getDevelopmentStudioName(),
                 query.getGenreCode(),
                 query.getEditionCode(),
@@ -62,6 +63,9 @@ public class PhysicalReleaseService {
 
         row.setId(physicalRelease.getId());
         row.setReleaseDate(physicalRelease.getReleaseDate());
+
+        // Set the physical release name if present
+        row.setPhysicalReleaseName(physicalRelease.getName());
 
         // Mapping du jeu
         if (physicalRelease.getGame() != null) {
