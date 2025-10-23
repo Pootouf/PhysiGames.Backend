@@ -2,7 +2,7 @@ package fr.physigames.mapper;
 
 import fr.physigames.entity.Game;
 import fr.physigames.row.GameRow;
-import fr.physigames.row.PhysicalReleaseRow;
+import fr.physigames.row.PhysicalReleaseMinimalRow;
 import fr.physigames.row.PublisherRow;
 import fr.physigames.row.DevelopmentStudioRow;
 import fr.physigames.row.GenreRow;
@@ -56,18 +56,9 @@ public class GameMapper {
             row.setLanguageCodes(g.getLanguages().stream().map(fr.physigames.entity.Language::getCode).collect(Collectors.toSet()));
         }
 
-        // Map physical releases using PhysicalReleaseMapper; pass localized genre name when requested
+        // Map physical releases using PhysicalReleaseMapper; use the minimal mapping
         if (g.getPhysicalReleases() != null) {
-            Set<PhysicalReleaseRow> prRows = g.getPhysicalReleases().stream().map(pr -> {
-                String localizedGenreName = null;
-                if (localizedGenreNames != null && g.getGenres() != null && !g.getGenres().isEmpty()) {
-                    Long firstGenreId = g.getGenres().stream().findFirst().map(fr.physigames.entity.Genre::getId).orElse(null);
-                    if (firstGenreId != null) {
-                        localizedGenreName = localizedGenreNames.get(firstGenreId);
-                    }
-                }
-                return physicalReleaseMapper.toRow(pr, localizedGenreName);
-            }).collect(Collectors.toSet());
+            Set<PhysicalReleaseMinimalRow> prRows = g.getPhysicalReleases().stream().map(physicalReleaseMapper::toMinimalRow).collect(Collectors.toSet());
             row.setPhysicalReleases(prRows);
         }
 

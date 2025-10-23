@@ -16,5 +16,5 @@ public class GameRow {
     private Set<DevelopmentStudioRow> developmentStudios;
     private Set<GenreRow> genres;
     private Set<String> languageCodes;
-    private Set<PhysicalReleaseRow> physicalReleases;
+    private Set<PhysicalReleaseMinimalRow> physicalReleases;
 }

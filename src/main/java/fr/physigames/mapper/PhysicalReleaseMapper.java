@@ -4,6 +4,7 @@ import fr.physigames.entity.Game;
 import fr.physigames.entity.PhysicalRelease;
 import fr.physigames.entity.Platform;
 import fr.physigames.row.PhysicalReleaseRow;
+import fr.physigames.row.PhysicalReleaseMinimalRow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -52,6 +53,22 @@ public class PhysicalReleaseMapper {
         }
 
         // Platform
+        Platform platform = physicalRelease.getPlatform();
+        if (platform != null) {
+            row.setPlatformCode(platform.getCode());
+            row.setPlatformLibelle(platform.getLibelle());
+        }
+
+        return row;
+    }
+
+    public PhysicalReleaseMinimalRow toMinimalRow(PhysicalRelease physicalRelease) {
+        if (physicalRelease == null) return null;
+
+        PhysicalReleaseMinimalRow row = new PhysicalReleaseMinimalRow();
+        row.setPhysicalReleaseName(physicalRelease.getName());
+        row.setReleaseDate(physicalRelease.getReleaseDate());
+
         Platform platform = physicalRelease.getPlatform();
         if (platform != null) {
             row.setPlatformCode(platform.getCode());
