@@ -1,6 +1,7 @@
 package fr.physigames.controller;
 
 import fr.physigames.query.physicalrelease.SearchPhysicalReleaseQuery;
+import fr.physigames.query.physicalrelease.CreatePhysicalReleaseQuery;
 import fr.physigames.row.PhysicalReleaseRow;
 import fr.physigames.service.PhysicalReleaseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,5 +41,21 @@ public class PhysicalReleaseController {
     ) {
         Page<PhysicalReleaseRow> results = physicalReleaseService.searchPhysicalReleases(query, pageable);
         return ResponseEntity.ok(results);
+    }
+
+    @PostMapping
+    @Operation(summary = "Créer une sortie physique", description = "Crée une PhysicalRelease")
+    public ResponseEntity<Long> createPhysicalRelease(
+            @ModelAttribute CreatePhysicalReleaseQuery query
+    ) {
+        Long createdId = physicalReleaseService.createPhysicalRelease(
+                query.getReleaseDate(),
+                query.getGameId(),
+                query.getEditionId(),
+                query.getPlatformId(),
+                query.getPublisherId(),
+                query.getName()
+        );
+        return ResponseEntity.status(201).body(createdId);
     }
 }
