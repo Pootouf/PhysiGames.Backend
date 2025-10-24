@@ -5,6 +5,7 @@ import fr.physigames.mapper.PhysicalReleaseMapper;
 import fr.physigames.query.physicalrelease.SearchPhysicalReleaseQuery;
 import fr.physigames.repository.*;
 import fr.physigames.row.PhysicalReleaseRow;
+import fr.physigames.row.GenreRow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -173,6 +176,23 @@ public class PhysicalReleaseService {
 
         physicalReleaseRepository.save(pr);
         return pr.getId();
+    }
+
+    /**
+     * Récupère une PhysicalRelease par son ID et la mappe en PhysicalReleaseDetailRow
+     */
+    public fr.physigames.row.PhysicalReleaseDetailRow getPhysicalReleaseById(Long id, String languageCode) {
+        PhysicalRelease pr = physicalReleaseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("PhysicalRelease not found for id: " + id));
+
+        List<GenreRow> genreRows = null;
+        if (pr.getGame() != null && pr.getGame().getGenres() != null) {
+            genreRows = pr.getGame().getGenres().stream()
+                    .map(g -> new GenreRow(g.getId(), g.getCode(), (languageCode != null) ? localizedGenreService.findNameByGenreIdAndLanguage(g.getId(), languageCode).orElse(null) : null))
+                    .collect(Collectors.toList());
+        }
+
+        return physicalReleaseMapper.toDetailRow(pr, genreRows);
     }
 
     /**

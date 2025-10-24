@@ -4,6 +4,7 @@ import fr.physigames.query.physicalrelease.SearchPhysicalReleaseQuery;
 import fr.physigames.query.physicalrelease.CreatePhysicalReleaseQuery;
 import fr.physigames.query.physicalrelease.UpdatePhysicalReleaseQuery;
 import fr.physigames.row.PhysicalReleaseRow;
+import fr.physigames.row.PhysicalReleaseDetailRow;
 import fr.physigames.service.PhysicalReleaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,6 +60,16 @@ public class PhysicalReleaseController {
                 query.getRegionId()
         );
         return ResponseEntity.status(201).body(createdId);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Récupérer une sortie physique par ID", description = "Récupère une PhysicalRelease détaillée par son ID")
+    public ResponseEntity<PhysicalReleaseDetailRow> getPhysicalReleaseById(
+            @Parameter(description = "ID de la PhysicalRelease à récupérer") @PathVariable Long id,
+            @Parameter(description = "Code langue pour les libellés localisés (optionnel)") @RequestParam(value = "language", required = false) String language
+    ) {
+        PhysicalReleaseDetailRow row = physicalReleaseService.getPhysicalReleaseById(id, language);
+        return ResponseEntity.ok(row);
     }
 
     @PutMapping("/{id}")

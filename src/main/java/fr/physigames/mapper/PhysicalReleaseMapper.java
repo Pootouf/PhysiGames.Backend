@@ -1,16 +1,16 @@
 package fr.physigames.mapper;
 
-import fr.physigames.entity.Game;
-import fr.physigames.entity.PhysicalRelease;
-import fr.physigames.entity.Platform;
-import fr.physigames.entity.Region;
+import fr.physigames.entity.*;
+import fr.physigames.row.GenreRow;
 import fr.physigames.row.PhysicalReleaseRow;
 import fr.physigames.row.PhysicalReleaseMinimalRow;
-import lombok.RequiredArgsConstructor;
+import fr.physigames.row.PhysicalReleaseDetailRow;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
-@RequiredArgsConstructor
 public class PhysicalReleaseMapper {
 
     public PhysicalReleaseRow toRow(PhysicalRelease physicalRelease, String localizedGenreName) {
@@ -76,6 +76,64 @@ public class PhysicalReleaseMapper {
         PhysicalReleaseMinimalRow row = new PhysicalReleaseMinimalRow();
         row.setPhysicalReleaseName(physicalRelease.getName());
         row.setReleaseDate(physicalRelease.getReleaseDate());
+
+        Platform platform = physicalRelease.getPlatform();
+        if (platform != null) {
+            row.setPlatformCode(platform.getCode());
+            row.setPlatformLibelle(platform.getLibelle());
+        }
+
+        Region region = physicalRelease.getRegion();
+        if (region != null) {
+            row.setRegionCode(region.getCode());
+            row.setRegionName(region.getName());
+        }
+
+        return row;
+    }
+
+    public PhysicalReleaseDetailRow toDetailRow(PhysicalRelease physicalRelease, List<GenreRow> genreRows) {
+        if (physicalRelease == null) return null;
+
+        PhysicalReleaseDetailRow row = new PhysicalReleaseDetailRow();
+        row.setId(physicalRelease.getId());
+        row.setReleaseDate(physicalRelease.getReleaseDate());
+        row.setPhysicalReleaseName(physicalRelease.getName());
+
+        Game game = physicalRelease.getGame();
+        if (game != null) {
+            row.setGameTitle(game.getTitle());
+
+            if (game.getPublishers() != null) {
+                List<String> publisherNames = game.getPublishers().stream().map(Publisher::getName).collect(Collectors.toList());
+                row.setPublisherNames(publisherNames);
+            }
+
+            if (game.getDevelopmentStudios() != null) {
+                List<String> devNames = game.getDevelopmentStudios().stream().map(DevelopmentStudio::getName).collect(Collectors.toList());
+                row.setDevelopmentStudioNames(devNames);
+            }
+
+            if (game.getGenres() != null) {
+                if (genreRows != null) {
+                    row.setGenres(genreRows);
+                } else {
+                    // fallback: build minimal GenreRow with id and code
+                    List<GenreRow> minimal = game.getGenres().stream()
+                            .map(g -> new GenreRow(g.getId(), g.getCode(), null))
+                            .collect(Collectors.toList());
+                    row.setGenres(minimal);
+                }
+            }
+        }
+
+        if (physicalRelease.getPhysicalPublisher() != null) {
+            row.setPhysicalPublisherName(physicalRelease.getPhysicalPublisher().getName());
+        }
+
+        if (physicalRelease.getEdition() != null) {
+            row.setEditionCode(physicalRelease.getEdition().getCode());
+        }
 
         Platform platform = physicalRelease.getPlatform();
         if (platform != null) {
