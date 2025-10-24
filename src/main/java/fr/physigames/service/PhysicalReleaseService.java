@@ -157,4 +157,14 @@ public class PhysicalReleaseService {
         physicalReleaseRepository.save(pr);
         return pr.getId();
     }
+
+    /**
+     * Supprime une PhysicalRelease existante
+     */
+    @Transactional
+    public void deletePhysicalRelease(Long id) {
+        PhysicalRelease pr = physicalReleaseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("PhysicalRelease not found for id: " + id));
+        physicalReleaseRepository.delete(pr);
+    }
 }

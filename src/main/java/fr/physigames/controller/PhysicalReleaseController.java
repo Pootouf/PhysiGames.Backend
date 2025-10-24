@@ -77,4 +77,13 @@ public class PhysicalReleaseController {
         );
         return ResponseEntity.ok(updatedId);
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Supprimer une sortie physique", description = "Supprime une PhysicalRelease par son ID")
+    public ResponseEntity<Void> deletePhysicalRelease(
+            @Parameter(description = "ID de la PhysicalRelease à supprimer") @PathVariable Long id
+    ) {
+        physicalReleaseService.deletePhysicalRelease(id);
+        return ResponseEntity.noContent().build();
+    }
 }
