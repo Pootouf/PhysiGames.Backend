@@ -1,6 +1,5 @@
 package fr.physigames.controller;
 
-import fr.physigames.entity.DevelopmentStudio;
 import fr.physigames.query.developmentstudio.CreateDevelopmentStudioQuery;
 import fr.physigames.query.developmentstudio.UpdateDevelopmentStudioQuery;
 import fr.physigames.query.developmentstudio.SearchDevelopmentStudioQuery;
@@ -43,16 +42,16 @@ public class DevelopmentStudioController {
 
     @PostMapping
     @Operation(summary = "Créer un studio de développement")
-    public ResponseEntity<DevelopmentStudio> create(@RequestBody CreateDevelopmentStudioQuery query) {
-        DevelopmentStudio toCreate = query.toEntity();
-        DevelopmentStudio created = developmentStudioService.create(toCreate);
-        return ResponseEntity.status(201).body(created);
+    public ResponseEntity<Long> create(@RequestBody CreateDevelopmentStudioQuery query) {
+        var toCreate = query.toEntity();
+        var createdId = developmentStudioService.create(toCreate);
+        return ResponseEntity.status(201).body(createdId);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour un studio existant")
-    public ResponseEntity<DevelopmentStudio> update(@PathVariable Long id, @RequestBody UpdateDevelopmentStudioQuery query) {
-        DevelopmentStudio toUpdate = query.toEntity();
+    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody UpdateDevelopmentStudioQuery query) {
+        var toUpdate = query.toEntity();
         return developmentStudioService.update(id, toUpdate)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

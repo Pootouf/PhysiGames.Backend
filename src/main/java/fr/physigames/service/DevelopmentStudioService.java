@@ -29,16 +29,18 @@ public class DevelopmentStudioService {
     }
 
     @Transactional
-    public DevelopmentStudio create(DevelopmentStudio developmentStudio) {
+    public Long create(DevelopmentStudio developmentStudio) {
         developmentStudio.setId(null);
-        return developmentStudioRepository.save(developmentStudio);
+        DevelopmentStudio saved = developmentStudioRepository.save(developmentStudio);
+        return saved.getId();
     }
 
     @Transactional
-    public Optional<DevelopmentStudio> update(Long id, DevelopmentStudio updated) {
+    public Optional<Long> update(Long id, DevelopmentStudio updated) {
         return developmentStudioRepository.findById(id).map(existing -> {
             existing.setName(updated.getName());
-            return developmentStudioRepository.save(existing);
+            DevelopmentStudio saved = developmentStudioRepository.save(existing);
+            return saved.getId();
         });
     }
 

@@ -43,15 +43,15 @@ public class PublisherController {
 
     @PostMapping
     @Operation(summary = "Créer un éditeur")
-    public ResponseEntity<Publisher> create(@RequestBody CreatePublisherQuery query) {
+    public ResponseEntity<Long> create(@RequestBody CreatePublisherQuery query) {
         Publisher toCreate = query.toEntity();
-        Publisher created = publisherService.create(toCreate);
+        Long created = publisherService.create(toCreate);
         return ResponseEntity.status(201).body(created);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour un éditeur existant")
-    public ResponseEntity<Publisher> update(@PathVariable Long id, @RequestBody UpdatePublisherQuery query) {
+    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody UpdatePublisherQuery query) {
         Publisher toUpdate = query.toEntity();
         return publisherService.update(id, toUpdate)
                 .map(ResponseEntity::ok)

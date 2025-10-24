@@ -1,6 +1,5 @@
 package fr.physigames.controller;
 
-import fr.physigames.entity.Game;
 import fr.physigames.query.game.CreateGameQuery;
 import fr.physigames.query.game.SearchGameQuery;
 import fr.physigames.query.game.UpdateGameQuery;
@@ -43,17 +42,15 @@ public class GameController {
 
     @PostMapping
     @Operation(summary = "Créer un jeu")
-    public ResponseEntity<Game> create(@RequestBody CreateGameQuery query) {
-        Game toCreate = query.toEntity();
-        Game created = gameService.create(toCreate);
-        return ResponseEntity.status(201).body(created);
+    public ResponseEntity<Long> create(@RequestBody CreateGameQuery query) {
+        var createdId = gameService.create(query.toEntity());
+        return ResponseEntity.status(201).body(createdId);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour un jeu existant")
-    public ResponseEntity<Game> update(@PathVariable Long id, @RequestBody UpdateGameQuery query) {
-        Game toUpdate = query.toEntity();
-        return gameService.update(id, toUpdate)
+    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody UpdateGameQuery query) {
+        return gameService.update(id, query.toEntity())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

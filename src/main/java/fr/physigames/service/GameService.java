@@ -48,17 +48,19 @@ public class GameService {
     }
 
     @Transactional
-    public Game create(Game game) {
+    public Long create(Game game) {
         applyResolvedRelationsTo(game, game);
-        return gameRepository.save(game);
+        Game saved = gameRepository.save(game);
+        return saved.getId();
     }
 
     @Transactional
-    public Optional<Game> update(Long id, Game updated) {
+    public Optional<Long> update(Long id, Game updated) {
         return gameRepository.findById(id).map(existing -> {
             existing.setTitle(updated.getTitle());
             applyResolvedRelationsTo(existing, updated);
-            return gameRepository.save(existing);
+            Game saved = gameRepository.save(existing);
+            return saved.getId();
         });
     }
 

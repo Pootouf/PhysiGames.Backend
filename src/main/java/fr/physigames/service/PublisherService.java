@@ -29,16 +29,18 @@ public class PublisherService {
     }
 
     @Transactional
-    public Publisher create(Publisher publisher) {
+    public Long create(Publisher publisher) {
         publisher.setId(null);
-        return publisherRepository.save(publisher);
+        Publisher saved = publisherRepository.save(publisher);
+        return saved.getId();
     }
 
     @Transactional
-    public Optional<Publisher> update(Long id, Publisher updated) {
+    public Optional<Long> update(Long id, Publisher updated) {
         return publisherRepository.findById(id).map(existing -> {
             existing.setName(updated.getName());
-            return publisherRepository.save(existing);
+            Publisher saved = publisherRepository.save(existing);
+            return saved.getId();
         });
     }
 
