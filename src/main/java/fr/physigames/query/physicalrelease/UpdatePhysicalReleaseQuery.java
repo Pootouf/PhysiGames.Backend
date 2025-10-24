@@ -20,4 +20,6 @@ public class UpdatePhysicalReleaseQuery {
     private Long gameId;
 
     private Long platformId;
+
+    private Long regionId;
 }

@@ -25,6 +25,7 @@ public class PhysicalReleaseService {
     private final EditionRepository editionRepository;
     private final PlatformRepository platformRepository;
     private final PublisherRepository publisherRepository;
+    private final RegionRepository regionRepository;
 
     /**
      * Recherche paginée de PhysicalRelease avec filtres optionnels.
@@ -49,6 +50,7 @@ public class PhysicalReleaseService {
                 query.getPlatformCode(),
                 query.getReleaseDateFrom(),
                 query.getReleaseDateTo(),
+                query.getRegionId(),
                 pageable
         );
 
@@ -74,12 +76,15 @@ public class PhysicalReleaseService {
      * @return l'id de l'entité PhysicalRelease sauvegardée
      */
     @Transactional
-    public Long createPhysicalRelease(LocalDate releaseDate, Long gameId, Long editionId, Long platformId, Long publisherId, String name) {
+    public Long createPhysicalRelease(LocalDate releaseDate, Long gameId, Long editionId, Long platformId, Long publisherId, String name, Long regionId) {
         if (gameId == null) {
             throw new IllegalArgumentException("gameId is required");
         }
         if (platformId == null) {
             throw new IllegalArgumentException("platformId is required");
+        }
+        if (regionId == null) {
+            throw new IllegalArgumentException("regionId is required");
         }
 
         Game game = gameRepository.findById(gameId)
@@ -100,6 +105,9 @@ public class PhysicalReleaseService {
                     .orElseThrow(() -> new IllegalArgumentException("Publisher not found for id: " + publisherId));
         }
 
+        Region region = regionRepository.findById(regionId)
+                .orElseThrow(() -> new IllegalArgumentException("Region not found for id: " + regionId));
+
         PhysicalRelease pr = new PhysicalRelease();
         pr.setReleaseDate(releaseDate);
         pr.setGame(game);
@@ -107,6 +115,7 @@ public class PhysicalReleaseService {
         pr.setPlatform(platform);
         pr.setPhysicalPublisher(physicalPublisher);
         pr.setName(name);
+        pr.setRegion(region);
 
         return physicalReleaseRepository.save(pr).getId();
     }
@@ -116,9 +125,13 @@ public class PhysicalReleaseService {
      * @return l'id de la PhysicalRelease mise à jour
      */
     @Transactional
-    public Long updatePhysicalRelease(Long id, LocalDate releaseDate, Long editionId, Long publisherId, String name, Long gameId, Long platformId) {
+    public Long updatePhysicalRelease(Long id, LocalDate releaseDate, Long editionId, Long publisherId, String name, Long gameId, Long platformId, Long regionId) {
         PhysicalRelease pr = physicalReleaseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("PhysicalRelease not found for id: " + id));
+
+        if (regionId == null) {
+            throw new IllegalArgumentException("regionId is required");
+        }
 
         pr.setReleaseDate(releaseDate);
 
@@ -153,6 +166,10 @@ public class PhysicalReleaseService {
                     .orElseThrow(() -> new IllegalArgumentException("Platform not found for id: " + platformId));
             pr.setPlatform(platform);
         }
+
+        Region region = regionRepository.findById(regionId)
+                .orElseThrow(() -> new IllegalArgumentException("Region not found for id: " + regionId));
+        pr.setRegion(region);
 
         physicalReleaseRepository.save(pr);
         return pr.getId();

@@ -55,7 +55,8 @@ public class PhysicalReleaseController {
                 query.getEditionId(),
                 query.getPlatformId(),
                 query.getPublisherId(),
-                query.getName()
+                query.getName(),
+                query.getRegionId()
         );
         return ResponseEntity.status(201).body(createdId);
     }
@@ -73,7 +74,8 @@ public class PhysicalReleaseController {
                 query.getPublisherId(),
                 query.getName(),
                 query.getGameId(),
-                query.getPlatformId()
+                query.getPlatformId(),
+                query.getRegionId()
         );
         return ResponseEntity.ok(updatedId);
     }

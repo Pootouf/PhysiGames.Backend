@@ -22,5 +22,6 @@ public class CreatePhysicalReleaseQuery {
     private Long publisherId;
 
     private String name;
-}
 
+    private Long regionId;
+}

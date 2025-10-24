@@ -3,6 +3,7 @@ package fr.physigames.mapper;
 import fr.physigames.entity.Game;
 import fr.physigames.entity.PhysicalRelease;
 import fr.physigames.entity.Platform;
+import fr.physigames.entity.Region;
 import fr.physigames.row.PhysicalReleaseRow;
 import fr.physigames.row.PhysicalReleaseMinimalRow;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,13 @@ public class PhysicalReleaseMapper {
             row.setPlatformLibelle(platform.getLibelle());
         }
 
+        // Region
+        Region region = physicalRelease.getRegion();
+        if (region != null) {
+            row.setRegionCode(region.getCode());
+            row.setRegionName(region.getName());
+        }
+
         return row;
     }
 
@@ -73,6 +81,12 @@ public class PhysicalReleaseMapper {
         if (platform != null) {
             row.setPlatformCode(platform.getCode());
             row.setPlatformLibelle(platform.getLibelle());
+        }
+
+        Region region = physicalRelease.getRegion();
+        if (region != null) {
+            row.setRegionCode(region.getCode());
+            row.setRegionName(region.getName());
         }
 
         return row;

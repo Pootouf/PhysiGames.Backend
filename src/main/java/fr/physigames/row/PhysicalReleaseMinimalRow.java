@@ -14,5 +14,6 @@ public class PhysicalReleaseMinimalRow {
     private String platformCode;
     private String platformLibelle;
     private LocalDate releaseDate;
+    private String regionCode;
+    private String regionName;
 }
-

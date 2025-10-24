@@ -28,6 +28,7 @@ public interface PhysicalReleaseRepository extends JpaRepository<PhysicalRelease
      * @param platformCode Filtre sur le code de plateforme (contient, insensible à la casse)
      * @param releaseDateFrom Date de sortie minimale
      * @param releaseDateTo Date de sortie maximale
+     * @param regionId Filtre sur l'ID de la région (optionnel)
      * @param pageable Pagination et tri
      * @return Page de PhysicalRelease filtrés
      */
@@ -60,7 +61,8 @@ public interface PhysicalReleaseRepository extends JpaRepository<PhysicalRelease
             "AND (LOWER(e.code) LIKE LOWER(CONCAT('%', :editionCode, '%')) OR :editionCode IS NULL) " +
             "AND (LOWER(p.code) LIKE LOWER(CONCAT('%', :platformCode, '%')) OR :platformCode IS NULL) " +
             "AND (:releaseDateFrom IS NULL OR pr.releaseDate >= :releaseDateFrom) " +
-            "AND (:releaseDateTo IS NULL OR pr.releaseDate <= :releaseDateTo)")
+            "AND (:releaseDateTo IS NULL OR pr.releaseDate <= :releaseDateTo) " +
+            "AND (:regionId IS NULL OR pr.region.id = :regionId)")
     Page<PhysicalRelease> searchPhysicalReleases(
             @Param("gameTitle") String gameTitle,
             @Param("publisherName") String publisherName,
@@ -72,5 +74,6 @@ public interface PhysicalReleaseRepository extends JpaRepository<PhysicalRelease
             @Param("platformCode") String platformCode,
             @Param("releaseDateFrom") LocalDate releaseDateFrom,
             @Param("releaseDateTo") LocalDate releaseDateTo,
+            @Param("regionId") Long regionId,
             Pageable pageable);
 }

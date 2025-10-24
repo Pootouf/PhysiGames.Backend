@@ -34,4 +34,8 @@ public class PhysicalReleaseRow {
     private String platformLibelle;
 
     private LocalDate releaseDate;
+
+    private String regionCode;
+
+    private String regionName;
 }

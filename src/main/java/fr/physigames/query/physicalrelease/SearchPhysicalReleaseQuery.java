@@ -65,6 +65,11 @@ public class SearchPhysicalReleaseQuery {
     private LocalDate releaseDateTo;
 
     /**
+     * Filtre sur l'id de la région
+     */
+    private Long regionId;
+
+    /**
      * Code de la langue utilisée pour récupérer les libellés localisés (ex: "fr-fr").
      * Ce champ est requis au niveau de la route HTTP mais peut rester nullable dans l'objet query.
      */
