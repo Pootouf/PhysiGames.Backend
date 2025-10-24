@@ -2,6 +2,7 @@ package fr.physigames.controller;
 
 import fr.physigames.query.physicalrelease.SearchPhysicalReleaseQuery;
 import fr.physigames.query.physicalrelease.CreatePhysicalReleaseQuery;
+import fr.physigames.query.physicalrelease.UpdatePhysicalReleaseQuery;
 import fr.physigames.row.PhysicalReleaseRow;
 import fr.physigames.service.PhysicalReleaseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,5 +58,23 @@ public class PhysicalReleaseController {
                 query.getName()
         );
         return ResponseEntity.status(201).body(createdId);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Mettre à jour une sortie physique", description = "Met à jour une PhysicalRelease")
+    public ResponseEntity<Long> updatePhysicalRelease(
+            @Parameter(description = "ID de la PhysicalRelease à mettre à jour") @PathVariable Long id,
+            @ModelAttribute UpdatePhysicalReleaseQuery query
+    ) {
+        Long updatedId = physicalReleaseService.updatePhysicalRelease(
+                id,
+                query.getReleaseDate(),
+                query.getEditionId(),
+                query.getPublisherId(),
+                query.getName(),
+                query.getGameId(),
+                query.getPlatformId()
+        );
+        return ResponseEntity.ok(updatedId);
     }
 }

@@ -65,9 +65,9 @@ public class PhysicalReleaseService {
 
     /**
      * Crée une PhysicalRelease à partir des paramètres fournis.
-     * @param releaseDate date de sortie (obligatoire)
+     * @param releaseDate date de sortie (optionnelle)
      * @param gameId id du jeu (obligatoire)
-     * @param editionId id de l'édition (obligatoire)
+     * @param editionId id de l'édition (optionnelle)
      * @param platformId id de la plateforme (obligatoire)
      * @param publisherId id du publisher physique (optionnel)
      * @param name nom de la release (optionnel)
@@ -75,14 +75,8 @@ public class PhysicalReleaseService {
      */
     @Transactional
     public Long createPhysicalRelease(LocalDate releaseDate, Long gameId, Long editionId, Long platformId, Long publisherId, String name) {
-        if (releaseDate == null) {
-            throw new IllegalArgumentException("releaseDate is required");
-        }
         if (gameId == null) {
             throw new IllegalArgumentException("gameId is required");
-        }
-        if (editionId == null) {
-            throw new IllegalArgumentException("editionId is required");
         }
         if (platformId == null) {
             throw new IllegalArgumentException("platformId is required");
@@ -91,8 +85,11 @@ public class PhysicalReleaseService {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found for id: " + gameId));
 
-        Edition edition = editionRepository.findById(editionId)
-                .orElseThrow(() -> new IllegalArgumentException("Edition not found for id: " + editionId));
+        Edition edition = null;
+        if (editionId != null) {
+            edition = editionRepository.findById(editionId)
+                    .orElseThrow(() -> new IllegalArgumentException("Edition not found for id: " + editionId));
+        }
 
         Platform platform = platformRepository.findById(platformId)
                 .orElseThrow(() -> new IllegalArgumentException("Platform not found for id: " + platformId));
@@ -112,5 +109,52 @@ public class PhysicalReleaseService {
         pr.setName(name);
 
         return physicalReleaseRepository.save(pr).getId();
+    }
+
+    /**
+     * Met à jour une PhysicalRelease existante
+     * @return l'id de la PhysicalRelease mise à jour
+     */
+    @Transactional
+    public Long updatePhysicalRelease(Long id, LocalDate releaseDate, Long editionId, Long publisherId, String name, Long gameId, Long platformId) {
+        PhysicalRelease pr = physicalReleaseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("PhysicalRelease not found for id: " + id));
+
+        pr.setReleaseDate(releaseDate);
+
+        if (editionId == null) {
+            pr.setEdition(null);
+        } else {
+            Edition edition = editionRepository.findById(editionId)
+                    .orElseThrow(() -> new IllegalArgumentException("Edition not found for id: " + editionId));
+            pr.setEdition(edition);
+        }
+
+        if (publisherId == null) {
+            pr.setPhysicalPublisher(null);
+        } else {
+            Publisher physicalPublisher = publisherRepository.findById(publisherId)
+                    .orElseThrow(() -> new IllegalArgumentException("Publisher not found for id: " + publisherId));
+            pr.setPhysicalPublisher(physicalPublisher);
+        }
+        pr.setName(name);
+        if (gameId == null) {
+            pr.setGame(null);
+        } else {
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new IllegalArgumentException("Game not found for id: " + gameId));
+            pr.setGame(game);
+        }
+
+        if (platformId == null) {
+            pr.setPlatform(null);
+        } else {
+            Platform platform = platformRepository.findById(platformId)
+                    .orElseThrow(() -> new IllegalArgumentException("Platform not found for id: " + platformId));
+            pr.setPlatform(platform);
+        }
+
+        physicalReleaseRepository.save(pr);
+        return pr.getId();
     }
 }
