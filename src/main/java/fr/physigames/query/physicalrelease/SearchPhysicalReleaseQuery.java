@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 /**
  * Query object pour la recherche de PhysicalRelease.
- * Tous les champs sont optionnels (nullable) sauf la langue qui sera exigée par le controller.
+ * Tous les champs sont optionnels (nullable).
  */
 @Data
 @NoArgsConstructor
@@ -68,10 +68,4 @@ public class SearchPhysicalReleaseQuery {
      * Filtre sur l'id de la région
      */
     private Long regionId;
-
-    /**
-     * Code de la langue utilisée pour récupérer les libellés localisés (ex: "fr-fr").
-     * Ce champ est requis au niveau de la route HTTP mais peut rester nullable dans l'objet query.
-     */
-    private String languageCode;
 }

@@ -41,6 +41,13 @@ public class PhysicalReleaseService {
     public Page<PhysicalReleaseRow> searchPhysicalReleases(
             SearchPhysicalReleaseQuery query,
             Pageable pageable) {
+        return searchPhysicalReleases(query, pageable, null);
+    }
+
+    public Page<PhysicalReleaseRow> searchPhysicalReleases(
+            SearchPhysicalReleaseQuery query,
+            Pageable pageable,
+            String languageCode) {
 
         Page<PhysicalRelease> physicalReleases = physicalReleaseRepository.searchPhysicalReleases(
                 query.getGameTitle(),
@@ -57,7 +64,6 @@ public class PhysicalReleaseService {
                 pageable
         );
 
-        final String languageCode = query.getLanguageCode();
         return physicalReleases.map(pr -> {
             String localizedGenreName = null;
             if (languageCode != null && pr.getGame() != null && pr.getGame().getGenres() != null && !pr.getGame().getGenres().isEmpty()) {

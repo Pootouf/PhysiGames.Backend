@@ -34,14 +34,15 @@ public class PhysicalReleaseController {
     @GetMapping
     @Operation(
             summary = "Rechercher des sorties physiques",
-            description = "Recherche paginée de sorties physiques avec filtres optionnels sur le jeu, l'éditeur, la plateforme, etc. Le paramètre 'language' est obligatoire et permet de récupérer les libellés localisés (ex: nom du genre)."
+            description = "Recherche paginée de sorties physiques avec filtres optionnels sur le jeu, l'éditeur, la plateforme, etc. Le header 'Accept-Language' permet de récupérer les libellés localisés (ex: nom du genre)."
     )
     public ResponseEntity<Page<PhysicalReleaseRow>> searchPhysicalReleases(
             @Parameter(description = "Objet de recherche contenant les filtres (voir SearchPhysicalReleaseQuery)")
             @ModelAttribute SearchPhysicalReleaseQuery query,
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
             @PageableDefault(size = 20, sort = "releaseDate") Pageable pageable
     ) {
-        Page<PhysicalReleaseRow> results = physicalReleaseService.searchPhysicalReleases(query, pageable);
+        Page<PhysicalReleaseRow> results = physicalReleaseService.searchPhysicalReleases(query, pageable, acceptLanguage);
         return ResponseEntity.ok(results);
     }
 
@@ -66,9 +67,9 @@ public class PhysicalReleaseController {
     @Operation(summary = "Récupérer une sortie physique par ID", description = "Récupère une PhysicalRelease détaillée par son ID")
     public ResponseEntity<PhysicalReleaseDetailRow> getPhysicalReleaseById(
             @Parameter(description = "ID de la PhysicalRelease à récupérer") @PathVariable Long id,
-            @Parameter(description = "Code langue pour les libellés localisés (optionnel)") @RequestParam(value = "language", required = false) String language
+            @Parameter(description = "Code langue pour les libellés localisés (optionnel)") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage
     ) {
-        PhysicalReleaseDetailRow row = physicalReleaseService.getPhysicalReleaseById(id, language);
+        PhysicalReleaseDetailRow row = physicalReleaseService.getPhysicalReleaseById(id, acceptLanguage);
         return ResponseEntity.ok(row);
     }
 

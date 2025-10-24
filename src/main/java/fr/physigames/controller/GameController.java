@@ -25,17 +25,17 @@ public class GameController {
     @GetMapping
     @Operation(summary = "Rechercher des jeux", description = "Recherche paginée par titre (partiel, insensible à la casse)")
     public ResponseEntity<Page<GameRow>> search(@ModelAttribute SearchGameQuery query,
-                                                @RequestParam(name = "language", required = false) String language,
+                                                @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
                                                 @PageableDefault(size = 20) Pageable pageable) {
-        Page<GameRow> results = gameService.search(query.getTitle(), pageable, language);
+        Page<GameRow> results = gameService.search(query.getTitle(), pageable, acceptLanguage);
         return ResponseEntity.ok(results);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Récupérer un jeu par son id")
     public ResponseEntity<GameRow> getById(@PathVariable Long id,
-                                           @RequestParam(name = "language", required = false) String language) {
-        return gameService.findRowById(id, language)
+                                           @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return gameService.findRowById(id, acceptLanguage)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
